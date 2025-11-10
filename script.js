@@ -85,25 +85,19 @@ const factors = [
     ]
   },
   {
-    name: "Pedology (Soil Type)",
+    name: "Rock Types",
     categorical: true,
     subclasses: [
-      { range: "Ectinite / Migmatite-derived soil", w: 2 },
-      { range: "Embrechitic soil", w: 5 },
-      { range: "Alluvial / Colluvial deposit", w: 4 },
-      { range: "Lateritic soil", w: 3 },
-      { range: "Clayey residual soil", w: 4 }
+      { range: "Ectinites, migmatites", w: 2 },
+      { range: "Embrechites", w: 5 }
     ]
   },
   {
     name: "Geology",
     categorical: true,
     subclasses: [
-      { range: "Migmatitic gneiss", w: 4 },
-      { range: "Embrechitic gneiss", w: 5 },
-      { range: "Granite / Quartzite", w: 2 },
-      { range: "Metasedimentary complex", w: 3 },
-      { range: "Schist / Phyllite", w: 5 }
+      { range: "Upper gneisses: garnetiferous with two micas", w: 2 },
+      { range: "Gneiss-Embrechite Gneiss-migmatitic", w: 5 }
     ]
   }
 ];
@@ -179,7 +173,7 @@ form.addEventListener("change", e => {
 });
 
 // ----------------------------------------------------
-// Calculate normalized susceptibility
+// Calculate normalized susceptibility + color display
 // ----------------------------------------------------
 document.getElementById("calcBtn").addEventListener("click", () => {
   const weights = Array.from(document.querySelectorAll(".weight-in")).map(x => +x.value || 0);
@@ -189,13 +183,19 @@ document.getElementById("calcBtn").addEventListener("click", () => {
   const pct = score.toFixed(1);
 
   let cls = "Very Low";
-  if (score >= 80) cls = "Very High";
-  else if (score >= 70) cls = "High";
-  else if (score >= 60) cls = "Moderate";
-  else if (score >= 50) cls = "Low";
+  let color = "#006400"; // dark green
+  if (score >= 80) { cls = "Very High"; color = "#d32f2f"; } // red
+  else if (score >= 70) { cls = "High"; color = "#ff8c00"; } // orange
+  else if (score >= 60) { cls = "Moderate"; color = "#ffd700"; } // yellow
+  else if (score >= 50) { cls = "Low"; color = "#008000"; } // green
+
+  const resultCard = document.getElementById("resultCard");
+  resultCard.classList.remove("d-none");
+  resultCard.style.backgroundColor = color;
+  resultCard.style.color = "white";
 
   document.getElementById("scoreVal").textContent = pct;
   document.getElementById("classVal").textContent = cls;
-  document.getElementById("resultCard").classList.remove("d-none");
-  document.getElementById("resultCard").scrollIntoView({behavior:"smooth"});
+
+  resultCard.scrollIntoView({behavior:"smooth"});
 });
